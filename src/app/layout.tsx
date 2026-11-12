@@ -3,6 +3,7 @@ import './globals.css';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { ToastProvider } from '@/context/ToastContext';
 import { StudyProvider } from '@/context/StudyContext';
+import { FOMProvider } from '@/context/FOMContext';
 
 export const metadata: Metadata = {
   title: 'StudyFlow — Personal Study Tracker',
@@ -37,7 +38,9 @@ export default function RootLayout({
         <ThemeProvider>
           <ToastProvider>
             <StudyProvider>
-              {children}
+              <FOMProvider>
+                {children}
+              </FOMProvider>
             </StudyProvider>
           </ToastProvider>
         </ThemeProvider>

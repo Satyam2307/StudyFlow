@@ -12,7 +12,9 @@ export type QuestionPriority = 'very_high' | 'high' | 'moderate';
 export type QuestionType = 'theory' | 'derivation' | 'numerical' | 'diagram';
 export type QuestionPrepStatus =
   | 'not_studied'
+  | 'reading'
   | 'learning'
+  | 'understood'
   | 'practising'
   | 'revised'
   | 'exam_ready';
@@ -31,6 +33,7 @@ export interface AnswerContent {
   quickRevision: string;
   examAnswer: string;
   detailedLearning: string;
+  diagramSvg?: string;
   numericalSolution?: NumericalSolution;
 }
 
