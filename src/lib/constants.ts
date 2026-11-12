@@ -1112,4 +1112,6 @@ export const INITIAL_STUDYFLOW_DATA: StudyFlowData = {
 
 export const LOCAL_STORAGE_KEY = 'studyflow_data_v1';
 export const THEME_STORAGE_KEY = 'studyflow_theme';
+export const FOM_STORAGE_KEY = 'studyflow_fom_questions_v1';
+
 
