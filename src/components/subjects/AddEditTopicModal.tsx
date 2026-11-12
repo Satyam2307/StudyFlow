@@ -87,8 +87,8 @@ export function AddEditTopicModal({
           <label className="block text-xs font-medium text-[#20211F] dark:text-[#EAECE7] mb-1.5">
             Exam Priority
           </label>
-          <div className="grid grid-cols-3 gap-2">
-            {(['low', 'medium', 'high'] as Priority[]).map(p => {
+          <div className="grid grid-cols-4 gap-1.5">
+            {(['very_high', 'high', 'moderate', 'low'] as Priority[]).map(p => {
               const cfg = priorityConfig[p];
               const isSelected = priority === p;
               return (
@@ -97,14 +97,14 @@ export function AddEditTopicModal({
                   key={p}
                   onClick={() => setPriority(p)}
                   className={cn(
-                    "flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium border transition-colors",
+                    "flex items-center justify-center gap-1 px-2 py-1.5 rounded-lg text-xs font-medium border transition-colors",
                     isSelected
-                      ? cn(cfg.bgClass, cfg.textClass, "border-current")
+                      ? cn(cfg.bgClass, cfg.textClass, "border-current font-semibold")
                       : "border-[#E8E9E4] dark:border-[#292C27] text-[#858780] hover:bg-[#F3F3EF] dark:hover:bg-[#20221E]"
                   )}
                 >
-                  <span className={cn("w-1.5 h-1.5 rounded-full", cfg.dotClass)} />
-                  <span>{cfg.label}</span>
+                  <span className={cn("w-1.5 h-1.5 rounded-full shrink-0", cfg.dotClass)} />
+                  <span className="truncate">{cfg.label}</span>
                 </button>
               );
             })}

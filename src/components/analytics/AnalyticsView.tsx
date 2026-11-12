@@ -104,8 +104,8 @@ export function AnalyticsView() {
           </div>
         </div>
 
-        {/* 4 Quick Stat Pills */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-5 mt-5 border-t border-[#F0F1EC] dark:border-[#252824]">
+        {/* 6 Quick Stat Pills */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 pt-5 mt-5 border-t border-[#F0F1EC] dark:border-[#252824]">
           <div className="p-3 rounded-lg bg-[#FAFBF9] dark:bg-[#151714]">
             <p className="text-[11px] text-[#858780] dark:text-[#8E928A]">
               Total Topics
@@ -114,17 +114,25 @@ export function AnalyticsView() {
               {overallStats.totalTopics}
             </p>
           </div>
-          <div className="p-3 rounded-lg bg-[#FAFBF9] dark:bg-[#151714]">
-            <p className="text-[11px] text-[#858780] dark:text-[#8E928A]">
-              Topics Mastered
+          <div className="p-3 rounded-lg bg-[#F0FDF4] dark:bg-[#14281A] border border-[#BBF7D0] dark:border-[#1B4D2B]">
+            <p className="text-[11px] text-[#166534] dark:text-[#86EFAC] font-medium">
+              Exam Ready
             </p>
-            <p className="text-lg font-semibold text-[#64866D] dark:text-[#7B9F84] mt-0.5">
-              {overallStats.completedTopics}
+            <p className="text-lg font-semibold text-[#166534] dark:text-[#86EFAC] mt-0.5">
+              {overallStats.examReadyTopics}
             </p>
           </div>
           <div className="p-3 rounded-lg bg-[#FAFBF9] dark:bg-[#151714]">
             <p className="text-[11px] text-[#858780] dark:text-[#8E928A]">
-              Topics Remaining
+              In Practice
+            </p>
+            <p className="text-lg font-semibold text-[#D97706] dark:text-[#F59E0B] mt-0.5">
+              {overallStats.practisingTopics}
+            </p>
+          </div>
+          <div className="p-3 rounded-lg bg-[#FAFBF9] dark:bg-[#151714]">
+            <p className="text-[11px] text-[#858780] dark:text-[#8E928A]">
+              Remaining
             </p>
             <p className="text-lg font-semibold text-[#20211F] dark:text-[#EAECE7] mt-0.5">
               {overallStats.totalTopics - overallStats.completedTopics}
@@ -132,10 +140,18 @@ export function AnalyticsView() {
           </div>
           <div className="p-3 rounded-lg bg-[#FAFBF9] dark:bg-[#151714]">
             <p className="text-[11px] text-[#858780] dark:text-[#8E928A]">
-              High Priority Done
+              PYQs Solved
             </p>
-            <p className="text-lg font-semibold text-[#C2843A] dark:text-[#DDA256] mt-0.5">
-              {overallStats.highPriorityCompleted} / {overallStats.highPriorityTotal}
+            <p className="text-lg font-semibold text-[#20211F] dark:text-[#EAECE7] mt-0.5">
+              {overallStats.solvedPyqs} / {overallStats.totalPyqs}
+            </p>
+          </div>
+          <div className="p-3 rounded-lg bg-[#FAFBF9] dark:bg-[#151714]">
+            <p className="text-[11px] text-[#858780] dark:text-[#8E928A]">
+              Independent Solved
+            </p>
+            <p className="text-lg font-semibold text-[#64866D] dark:text-[#7B9F84] mt-0.5">
+              {overallStats.independentProblems}
             </p>
           </div>
         </div>

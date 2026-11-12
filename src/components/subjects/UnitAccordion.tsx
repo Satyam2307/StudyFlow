@@ -56,9 +56,9 @@ export function UnitAccordion({
     }
 
     // Filter check
-    if (filter === 'pending') return !topic.completed;
-    if (filter === 'completed') return topic.completed;
-    if (filter === 'high') return topic.priority === 'high';
+    if (filter === 'pending') return !topic.completed && topic.studyStatus !== 'exam_ready';
+    if (filter === 'completed') return topic.completed || topic.studyStatus === 'exam_ready';
+    if (filter === 'high') return topic.priority === 'high' || topic.priority === 'very_high';
     return true;
   });
 

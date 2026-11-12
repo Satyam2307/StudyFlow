@@ -6,9 +6,11 @@ import {
   BookOpen,
   Cpu,
   Layers,
+  Calculator,
   ArrowRight,
   ChevronRight,
-  MoreVertical
+  CheckCircle2,
+  Sparkles
 } from 'lucide-react';
 import { Subject } from '@/types/study';
 import { getSubjectStats, cn } from '@/lib/utils';
@@ -27,6 +29,8 @@ export function SubjectCard({ subject, onClick }: SubjectCardProps) {
     switch (subject.icon) {
       case 'gauge':
         return <Gauge className="w-4 h-4" />;
+      case 'calculator':
+        return <Calculator className="w-4 h-4" />;
       case 'cpu':
         return <Cpu className="w-4 h-4" />;
       case 'layers':
@@ -58,11 +62,18 @@ export function SubjectCard({ subject, onClick }: SubjectCardProps) {
           <div className="w-8 h-8 rounded-lg bg-[#EBF1ED] dark:bg-[#1C271F] flex items-center justify-center text-[#64866D] dark:text-[#7B9F84] transition-colors group-hover:bg-[#DFEAE2] dark:group-hover:bg-[#233527]">
             {renderIcon()}
           </div>
-          {subject.code && (
-            <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-[#F3F3EF] dark:bg-[#252824] text-[#858780] dark:text-[#8E928A]">
-              {subject.code}
-            </span>
-          )}
+          <div className="flex flex-col items-end gap-1">
+            {subject.code && (
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#F3F3EF] dark:bg-[#252824] text-[#858780] dark:text-[#8E928A]">
+                {subject.code}
+              </span>
+            )}
+            {subject.semester && (
+              <span className="text-[10px] text-[#A3A59E] dark:text-[#60645D]">
+                {subject.semester}
+              </span>
+            )}
+          </div>
         </div>
 
         {/* Subject Title */}
@@ -70,10 +81,18 @@ export function SubjectCard({ subject, onClick }: SubjectCardProps) {
           {subject.name}
         </h3>
 
-        {/* Units count */}
-        <p className="text-[11px] text-[#858780] dark:text-[#8E928A] mt-1">
-          {subject.units.length} {subject.units.length === 1 ? 'unit' : 'units'} · {stats.total} total topics
-        </p>
+        {/* Units count & Exam-ready badge */}
+        <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+          <span className="text-[11px] text-[#858780] dark:text-[#8E928A]">
+            {subject.units.length} units · {stats.total} topics
+          </span>
+          {stats.examReady > 0 && (
+            <span className="inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded bg-[#F0FDF4] dark:bg-[#14281A] text-[#166534] dark:text-[#86EFAC] border border-[#BBF7D0] dark:border-[#1B4D2B]">
+              <CheckCircle2 className="w-2.5 h-2.5" />
+              {stats.examReady} exam-ready
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Progress & Bottom Bar */}
@@ -90,7 +109,7 @@ export function SubjectCard({ subject, onClick }: SubjectCardProps) {
         <ProgressBar value={stats.percentage} size="sm" />
 
         <div className="flex items-center justify-between text-[11px] text-[#64866D] dark:text-[#7B9F84] font-medium pt-3 opacity-90 group-hover:opacity-100 transition-opacity">
-          <span>View syllabus</span>
+          <span>Open subject</span>
           <ChevronRight className="w-3.5 h-3.5 transition-transform duration-150 group-hover:translate-x-0.5" />
         </div>
       </div>

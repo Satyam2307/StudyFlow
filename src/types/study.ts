@@ -1,14 +1,36 @@
-export type Priority = 'high' | 'medium' | 'low';
+export type Priority = 'very_high' | 'high' | 'moderate' | 'medium' | 'low';
+
+export type StudyStatus = 'not_started' | 'learning' | 'practising' | 'exam_ready';
+
+export interface PYQItem {
+  id: string;
+  question: string;
+  year?: string; // e.g. "Dec 2023", "May 2022" (empty if unestablished)
+  marks?: number; // 2, 3, 5, 7
+  solved: boolean;
+  solvedWithoutNotes: boolean;
+  notes?: string;
+}
+
+export interface NumericalPractice {
+  attempted: number;
+  correct: number;
+  requiresRevision: number;
+  independentSolved: number;
+}
 
 export interface Topic {
   id: string;
   name: string;
   completed: boolean;
   priority: Priority;
+  studyStatus?: StudyStatus;
   estimatedTime?: string; // e.g. "30 min", "1 hr", "45 min"
   completedAt?: string; // ISO date string when marked completed
   inTodayFocus?: boolean; // quick flag for today's focus
   notes?: string;
+  pyqs?: PYQItem[];
+  numericalPractice?: NumericalPractice;
 }
 
 export interface Unit {
@@ -22,7 +44,9 @@ export interface Subject {
   id: string;
   name: string;
   code?: string;
-  icon: string; // Lucide icon identifier (e.g. "gauge", "cpu", "book-open")
+  semester?: string;
+  department?: string;
+  icon: string; // Lucide icon identifier (e.g. "gauge", "calculator", "cpu", "book-open")
   color?: string; // Optional custom accent
   units: Unit[];
 }
@@ -66,4 +90,3 @@ export interface StudyFlowData {
 }
 
 export type ActiveTab = 'overview' | 'subjects' | 'today' | 'analytics' | 'settings';
-

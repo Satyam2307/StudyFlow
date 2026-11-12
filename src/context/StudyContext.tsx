@@ -8,10 +8,14 @@ import {
   Topic,
   TodayTask,
   Priority,
-  ActiveTab
+  ActiveTab,
+  StudyStatus,
+  PYQItem,
+  NumericalPractice
 } from '@/types/study';
 import {
   INITIAL_STUDYFLOW_DATA,
+  INITIAL_MATH_SUBJECT,
   LOCAL_STORAGE_KEY
 } from '@/lib/constants';
 import {
@@ -34,6 +38,7 @@ interface StudyContextType {
 
   // Topic Actions
   toggleTopic: (subjectId: string, unitId: string, topicId: string) => void;
+  updateTopicStatus: (subjectId: string, unitId: string, topicId: string, status: StudyStatus) => void;
   addTopic: (
     subjectId: string,
     unitId: string,
@@ -43,9 +48,21 @@ interface StudyContextType {
     subjectId: string,
     unitId: string,
     topicId: string,
-    updates: Partial<Pick<Topic, 'name' | 'priority' | 'estimatedTime' | 'notes'>>
+    updates: Partial<Pick<Topic, 'name' | 'priority' | 'estimatedTime' | 'notes' | 'studyStatus'>>
   ) => void;
   deleteTopic: (subjectId: string, unitId: string, topicId: string) => void;
+
+  // Mathematics & PYQ Actions
+  addPYQ: (subjectId: string, unitId: string, topicId: string, pyq: Omit<PYQItem, 'id'>) => void;
+  togglePYQ: (subjectId: string, unitId: string, topicId: string, pyqId: string) => void;
+  togglePYQWithoutNotes: (subjectId: string, unitId: string, topicId: string, pyqId: string) => void;
+  deletePYQ: (subjectId: string, unitId: string, topicId: string, pyqId: string) => void;
+  updateNumericalPractice: (
+    subjectId: string,
+    unitId: string,
+    topicId: string,
+    practice: Partial<NumericalPractice>
+  ) => void;
 
   // Unit Actions
   addUnit: (subjectId: string, name: string) => void;
@@ -79,14 +96,47 @@ export function StudyProvider({ children }: { children: React.ReactNode }) {
   const [searchQuery, setSearchQuery] = useState('');
   const { toast } = useToast();
 
-  // Load from LocalStorage on mount
+  // Load from LocalStorage on mount with automatic migration for Mathematics-III
   useEffect(() => {
     try {
       const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
       if (stored) {
         const parsed = JSON.parse(stored) as StudyFlowData;
         if (parsed.subjects && Array.isArray(parsed.subjects)) {
-          setData(parsed);
+          // Check if Mathematics-III is present. If not, merge it
+          const hasMath = parsed.subjects.some(
+            s => s.id === INITIAL_MATH_SUBJECT.id || s.name.includes('Mathematics-III')
+          );
+          let mergedSubjects = hasMath ? parsed.subjects : [...parsed.subjects, INITIAL_MATH_SUBJECT];
+
+          // Ensure all topics across all subjects have modern fields initialized
+          mergedSubjects = mergedSubjects.map(subject => ({
+            ...subject,
+            units: subject.units.map(unit => ({
+              ...unit,
+              topics: unit.topics.map(topic => ({
+                ...topic,
+                studyStatus:
+                  topic.studyStatus || (topic.completed ? 'exam_ready' : 'not_started'),
+                pyqs: topic.pyqs || [],
+                numericalPractice: topic.numericalPractice || {
+                  attempted: 0,
+                  correct: 0,
+                  requiresRevision: 0,
+                  independentSolved: 0
+                }
+              }))
+            }))
+          }));
+
+          const updatedData: StudyFlowData = {
+            ...parsed,
+            subjects: mergedSubjects
+          };
+          setData(updatedData);
+          localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedData));
+          setIsLoaded(true);
+          return;
         }
       }
     } catch (e) {
@@ -126,7 +176,7 @@ export function StudyProvider({ children }: { children: React.ReactNode }) {
         const todayKey = formatISODateKey();
         let targetTopicName = '';
         let targetSubjectName = '';
-        let wasCompleted = false;
+        let willBeCompleted = false;
 
         const newSubjects = prev.subjects.map(subject => {
           if (subject.id !== subjectId) return subject;
@@ -138,12 +188,13 @@ export function StudyProvider({ children }: { children: React.ReactNode }) {
             const newTopics = unit.topics.map(topic => {
               if (topic.id !== topicId) return topic;
               targetTopicName = topic.name;
-              wasCompleted = !topic.completed;
+              willBeCompleted = !topic.completed;
 
               return {
                 ...topic,
-                completed: !topic.completed,
-                completedAt: !topic.completed ? new Date().toISOString() : undefined
+                completed: willBeCompleted,
+                studyStatus: willBeCompleted ? ('exam_ready' as StudyStatus) : ('not_started' as StudyStatus),
+                completedAt: willBeCompleted ? new Date().toISOString() : undefined
               };
             });
 
@@ -156,7 +207,7 @@ export function StudyProvider({ children }: { children: React.ReactNode }) {
         // Also update corresponding todayTask if present
         const newTodayTasks = prev.todayTasks.map(task => {
           if (task.topicId === topicId) {
-            return { ...task, completed: wasCompleted };
+            return { ...task, completed: willBeCompleted };
           }
           return task;
         });
@@ -169,7 +220,7 @@ export function StudyProvider({ children }: { children: React.ReactNode }) {
           topics: []
         };
 
-        if (wasCompleted) {
+        if (willBeCompleted) {
           todayLog.count += 1;
           todayLog.topics.push({
             topicId,
@@ -187,9 +238,100 @@ export function StudyProvider({ children }: { children: React.ReactNode }) {
         const updatedSubject = newSubjects.find(s => s.id === subjectId);
         if (updatedSubject) {
           const updatedUnit = updatedSubject.units.find(u => u.id === unitId);
-          if (updatedUnit && getUnitStats(updatedUnit).percentage === 100 && wasCompleted) {
+          if (updatedUnit && getUnitStats(updatedUnit).percentage === 100 && willBeCompleted) {
             triggerMilestoneConfetti();
-          } else if (getSubjectStats(updatedSubject).percentage === 100 && wasCompleted) {
+          } else if (getSubjectStats(updatedSubject).percentage === 100 && willBeCompleted) {
+            triggerMilestoneConfetti();
+          }
+        }
+
+        return {
+          ...prev,
+          subjects: newSubjects,
+          todayTasks: newTodayTasks,
+          activityLogs
+        };
+      });
+    },
+    [updateStateAndPersist]
+  );
+
+  // Update 4-Level topic status (Not Started / Learning / Practising / Exam Ready)
+  const updateTopicStatus = useCallback(
+    (subjectId: string, unitId: string, topicId: string, status: StudyStatus) => {
+      updateStateAndPersist(prev => {
+        const todayKey = formatISODateKey();
+        let targetTopicName = '';
+        let targetSubjectName = '';
+        const isExamReady = status === 'exam_ready';
+        let previousCompleted = false;
+
+        const newSubjects = prev.subjects.map(subject => {
+          if (subject.id !== subjectId) return subject;
+          targetSubjectName = subject.name;
+
+          const newUnits = subject.units.map(unit => {
+            if (unit.id !== unitId) return unit;
+
+            const newTopics = unit.topics.map(topic => {
+              if (topic.id !== topicId) return topic;
+              targetTopicName = topic.name;
+              previousCompleted = topic.completed;
+
+              return {
+                ...topic,
+                studyStatus: status,
+                completed: isExamReady,
+                completedAt: isExamReady ? new Date().toISOString() : undefined
+              };
+            });
+
+            return { ...unit, topics: newTopics };
+          });
+
+          return { ...subject, units: newUnits };
+        });
+
+        // Also update corresponding todayTask if present
+        const newTodayTasks = prev.todayTasks.map(task => {
+          if (task.topicId === topicId) {
+            return { ...task, completed: isExamReady };
+          }
+          return task;
+        });
+
+        // Update daily activity log if completed status transitioned
+        const activityLogs = { ...prev.activityLogs };
+        if (isExamReady && !previousCompleted) {
+          const todayLog = activityLogs[todayKey] || {
+            date: todayKey,
+            count: 0,
+            topics: []
+          };
+          todayLog.count += 1;
+          todayLog.topics.push({
+            topicId,
+            topicName: targetTopicName,
+            subjectName: targetSubjectName,
+            completedAt: new Date().toISOString()
+          });
+          activityLogs[todayKey] = todayLog;
+        } else if (!isExamReady && previousCompleted) {
+          const todayLog = activityLogs[todayKey];
+          if (todayLog) {
+            todayLog.count = Math.max(0, todayLog.count - 1);
+            todayLog.topics = todayLog.topics.filter(t => t.topicId !== topicId);
+            activityLogs[todayKey] = todayLog;
+          }
+        }
+
+        // Check if milestone reached
+        const updatedSubject = newSubjects.find(s => s.id === subjectId);
+        if (updatedSubject) {
+          const updatedUnit = updatedSubject.units.find(u => u.id === unitId);
+          if (updatedUnit && getUnitStats(updatedUnit).percentage === 100 && isExamReady) {
+            triggerMilestoneConfetti();
+          } else if (getSubjectStats(updatedSubject).percentage === 100 && isExamReady) {
             triggerMilestoneConfetti();
           }
         }
@@ -202,7 +344,11 @@ export function StudyProvider({ children }: { children: React.ReactNode }) {
         };
       });
 
-      toast('Status updated');
+      if (status === 'exam_ready') {
+        toast('Topic marked Exam Ready!');
+      } else {
+        toast('Status updated');
+      }
     },
     [updateStateAndPersist, toast]
   );
@@ -309,6 +455,188 @@ export function StudyProvider({ children }: { children: React.ReactNode }) {
       toast('Topic deleted', 'info');
     },
     [updateStateAndPersist, toast]
+  );
+
+  // Mathematics & PYQ actions
+  const addPYQ = useCallback(
+    (subjectId: string, unitId: string, topicId: string, pyq: Omit<PYQItem, 'id'>) => {
+      const newPYQ: PYQItem = {
+        id: `pyq-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+        ...pyq
+      };
+
+      updateStateAndPersist(prev => ({
+        ...prev,
+        subjects: prev.subjects.map(s => {
+          if (s.id !== subjectId) return s;
+          return {
+            ...s,
+            units: s.units.map(u => {
+              if (u.id !== unitId) return u;
+              return {
+                ...u,
+                topics: u.topics.map(t => {
+                  if (t.id !== topicId) return t;
+                  return {
+                    ...t,
+                    pyqs: [...(t.pyqs || []), newPYQ]
+                  };
+                })
+              };
+            })
+          };
+        })
+      }));
+
+      toast('PYQ added to topic');
+    },
+    [updateStateAndPersist, toast]
+  );
+
+  const togglePYQ = useCallback(
+    (subjectId: string, unitId: string, topicId: string, pyqId: string) => {
+      updateStateAndPersist(prev => ({
+        ...prev,
+        subjects: prev.subjects.map(s => {
+          if (s.id !== subjectId) return s;
+          return {
+            ...s,
+            units: s.units.map(u => {
+              if (u.id !== unitId) return u;
+              return {
+                ...u,
+                topics: u.topics.map(t => {
+                  if (t.id !== topicId) return t;
+                  return {
+                    ...t,
+                    pyqs: (t.pyqs || []).map(p => {
+                      if (p.id !== pyqId) return p;
+                      const nextSolved = !p.solved;
+                      return {
+                        ...p,
+                        solved: nextSolved,
+                        solvedWithoutNotes: nextSolved ? p.solvedWithoutNotes : false
+                      };
+                    })
+                  };
+                })
+              };
+            })
+          };
+        })
+      }));
+    },
+    [updateStateAndPersist]
+  );
+
+  const togglePYQWithoutNotes = useCallback(
+    (subjectId: string, unitId: string, topicId: string, pyqId: string) => {
+      updateStateAndPersist(prev => ({
+        ...prev,
+        subjects: prev.subjects.map(s => {
+          if (s.id !== subjectId) return s;
+          return {
+            ...s,
+            units: s.units.map(u => {
+              if (u.id !== unitId) return u;
+              return {
+                ...u,
+                topics: u.topics.map(t => {
+                  if (t.id !== topicId) return t;
+                  return {
+                    ...t,
+                    pyqs: (t.pyqs || []).map(p => {
+                      if (p.id !== pyqId) return p;
+                      const nextVal = !p.solvedWithoutNotes;
+                      return {
+                        ...p,
+                        solvedWithoutNotes: nextVal,
+                        solved: nextVal ? true : p.solved
+                      };
+                    })
+                  };
+                })
+              };
+            })
+          };
+        })
+      }));
+      toast('PYQ marked solved independently (without notes)');
+    },
+    [updateStateAndPersist, toast]
+  );
+
+  const deletePYQ = useCallback(
+    (subjectId: string, unitId: string, topicId: string, pyqId: string) => {
+      updateStateAndPersist(prev => ({
+        ...prev,
+        subjects: prev.subjects.map(s => {
+          if (s.id !== subjectId) return s;
+          return {
+            ...s,
+            units: s.units.map(u => {
+              if (u.id !== unitId) return u;
+              return {
+                ...u,
+                topics: u.topics.map(t => {
+                  if (t.id !== topicId) return t;
+                  return {
+                    ...t,
+                    pyqs: (t.pyqs || []).filter(p => p.id !== pyqId)
+                  };
+                })
+              };
+            })
+          };
+        })
+      }));
+      toast('PYQ removed', 'info');
+    },
+    [updateStateAndPersist, toast]
+  );
+
+  const updateNumericalPractice = useCallback(
+    (
+      subjectId: string,
+      unitId: string,
+      topicId: string,
+      practice: Partial<NumericalPractice>
+    ) => {
+      updateStateAndPersist(prev => ({
+        ...prev,
+        subjects: prev.subjects.map(s => {
+          if (s.id !== subjectId) return s;
+          return {
+            ...s,
+            units: s.units.map(u => {
+              if (u.id !== unitId) return u;
+              return {
+                ...u,
+                topics: u.topics.map(t => {
+                  if (t.id !== topicId) return t;
+                  const current = t.numericalPractice || {
+                    attempted: 0,
+                    correct: 0,
+                    requiresRevision: 0,
+                    independentSolved: 0
+                  };
+                  return {
+                    ...t,
+                    numericalPractice: {
+                      attempted: Math.max(0, practice.attempted !== undefined ? practice.attempted : current.attempted),
+                      correct: Math.max(0, practice.correct !== undefined ? practice.correct : current.correct),
+                      requiresRevision: Math.max(0, practice.requiresRevision !== undefined ? practice.requiresRevision : current.requiresRevision),
+                      independentSolved: Math.max(0, practice.independentSolved !== undefined ? practice.independentSolved : current.independentSolved)
+                    }
+                  };
+                })
+              };
+            })
+          };
+        })
+      }));
+    },
+    [updateStateAndPersist]
   );
 
   // Add unit
@@ -667,9 +995,15 @@ export function StudyProvider({ children }: { children: React.ReactNode }) {
         searchQuery,
         setSearchQuery,
         toggleTopic,
+        updateTopicStatus,
         addTopic,
         editTopic,
         deleteTopic,
+        addPYQ,
+        togglePYQ,
+        togglePYQWithoutNotes,
+        deletePYQ,
+        updateNumericalPractice,
         addUnit,
         renameUnit,
         deleteUnit,

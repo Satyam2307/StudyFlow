@@ -9,11 +9,15 @@ import {
   CheckCircle2,
   Filter,
   Layers,
-  BookOpen
+  BookOpen,
+  Award,
+  Calculator,
+  Flame,
+  FileText
 } from 'lucide-react';
 import { useStudy } from '@/context/StudyContext';
 import { Subject, Topic, Priority } from '@/types/study';
-import { getSubjectStats, cn } from '@/lib/utils';
+import { getSubjectStats, getUnitStats, cn } from '@/lib/utils';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { UnitAccordion } from './UnitAccordion';
 import { AddEditTopicModal } from './AddEditTopicModal';
@@ -174,6 +178,114 @@ export function SubjectDetail({ subject, onBack }: SubjectDetailProps) {
 
         {/* Progress Bar */}
         <ProgressBar value={stats.percentage} size="md" className="mt-4" />
+
+        {/* Subject Preparation Analytics Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 mt-5 pt-5 border-t border-[#F0F1EC] dark:border-[#252824]">
+          <div className="p-2.5 rounded-lg bg-[#FAFBF9] dark:bg-[#161815] border border-[#ECEEE9] dark:border-[#262822]">
+            <span className="text-[10px] text-[#858780] dark:text-[#8E928A] block">Syllabus Done</span>
+            <span className="text-base font-bold text-[#20211F] dark:text-[#EAECE7]">
+              {stats.percentage}%
+            </span>
+            <span className="text-[10px] text-[#858780] dark:text-[#8E928A] block">
+              {stats.completed}/{stats.total} topics
+            </span>
+          </div>
+
+          <div className="p-2.5 rounded-lg bg-[#F0FDF4] dark:bg-[#14281A] border border-[#BBF7D0] dark:border-[#1B4D2B]">
+            <span className="text-[10px] text-[#166534] dark:text-[#86EFAC] block flex items-center gap-1">
+              <Award className="w-2.5 h-2.5" /> Exam Ready
+            </span>
+            <span className="text-base font-bold text-[#166534] dark:text-[#86EFAC]">
+              {stats.examReady}
+            </span>
+            <span className="text-[10px] text-[#166534]/80 dark:text-[#86EFAC]/80 block">
+              independent prep
+            </span>
+          </div>
+
+          <div className="p-2.5 rounded-lg bg-[#FFFBEB] dark:bg-[#2C2314] border border-[#FEF3C7] dark:border-[#4B391A]">
+            <span className="text-[10px] text-[#B45309] dark:text-[#FBBF24] block">In Practice</span>
+            <span className="text-base font-bold text-[#B45309] dark:text-[#FBBF24]">
+              {stats.practising}
+            </span>
+            <span className="text-[10px] text-[#B45309]/80 dark:text-[#FBBF24]/80 block">
+              active problem sets
+            </span>
+          </div>
+
+          <div className="p-2.5 rounded-lg bg-[#FAFBF9] dark:bg-[#161815] border border-[#ECEEE9] dark:border-[#262822]">
+            <span className="text-[10px] text-[#858780] dark:text-[#8E928A] block">Pending / Learn</span>
+            <span className="text-base font-bold text-[#20211F] dark:text-[#EAECE7]">
+              {stats.notStarted + stats.learning}
+            </span>
+            <span className="text-[10px] text-[#858780] dark:text-[#8E928A] block">
+              remaining topics
+            </span>
+          </div>
+
+          <div className="p-2.5 rounded-lg bg-[#FAFBF9] dark:bg-[#161815] border border-[#ECEEE9] dark:border-[#262822]">
+            <span className="text-[10px] text-[#858780] dark:text-[#8E928A] block flex items-center gap-1">
+              <FileText className="w-2.5 h-2.5" /> PYQs Solved
+            </span>
+            <span className="text-base font-bold text-[#20211F] dark:text-[#EAECE7]">
+              {stats.solvedPyqs}
+              <span className="text-xs font-normal text-[#858780]">/{stats.totalPyqs}</span>
+            </span>
+            <span className="text-[10px] text-[#64866D] dark:text-[#7B9F84] block truncate">
+              {stats.solvedWithoutNotesPyqs} no notes
+            </span>
+          </div>
+
+          <div className="p-2.5 rounded-lg bg-[#FAFBF9] dark:bg-[#161815] border border-[#ECEEE9] dark:border-[#262822]">
+            <span className="text-[10px] text-[#858780] dark:text-[#8E928A] block flex items-center gap-1">
+              <Calculator className="w-2.5 h-2.5" /> Independent Solved
+            </span>
+            <span className="text-base font-bold text-[#20211F] dark:text-[#EAECE7]">
+              {stats.independentProblems}
+            </span>
+            <span className="text-[10px] text-[#858780] dark:text-[#8E928A] block">
+              {stats.totalAttemptedProblems} attempted
+            </span>
+          </div>
+        </div>
+
+        {/* Unit-Wise Mini Progress Visualizer */}
+        {subject.units.length > 0 && (
+          <div className="mt-4 pt-4 border-t border-[#F0F1EC] dark:border-[#252824]">
+            <span className="text-[11px] font-medium text-[#858780] dark:text-[#8E928A] block mb-2">
+              Unit-Wise Progress
+            </span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
+              {subject.units.map(u => {
+                const uStats = getUnitStats(u);
+                return (
+                  <div
+                    key={u.id}
+                    className="p-2 rounded-lg bg-[#F8F9F7] dark:bg-[#20221E] border border-[#ECEEE9] dark:border-[#2B2E28]"
+                  >
+                    <div className="flex items-center justify-between text-[11px] mb-1">
+                      <span className="font-medium text-[#20211F] dark:text-[#EAECE7] truncate max-w-[120px]">
+                        {u.name.replace(/^Unit \d+\s*–\s*/, '')}
+                      </span>
+                      <span className="font-bold text-[#64866D] dark:text-[#7B9F84]">
+                        {uStats.percentage}%
+                      </span>
+                    </div>
+                    <ProgressBar value={uStats.percentage} size="sm" />
+                    <div className="flex items-center justify-between text-[10px] text-[#858780] dark:text-[#8E928A] mt-1">
+                      <span>{uStats.completed}/{uStats.total} done</span>
+                      {uStats.examReady > 0 && (
+                        <span className="text-[#166534] dark:text-[#86EFAC] font-medium">
+                          {uStats.examReady} ready
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Filter and Search Bar */}
