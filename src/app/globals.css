@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* StudyFlow Design System Tokens */
 :root {
   --sf-bg: #F8F8F5;
   --sf-surface: #FFFFFF;
@@ -62,7 +65,7 @@ body {
   background: var(--sf-border-hover);
 }
 
-/* Focus styles */
+/* Focus styles following Hallmark Floor */
 *:focus-visible {
   outline: 2px solid var(--sf-accent);
   outline-offset: 2px;

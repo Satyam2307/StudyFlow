@@ -29,7 +29,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         setThemeState(prefersDark ? 'dark' : 'light');
       }
     } catch {
-      // ignore SSR/localStorage disabled
+      // ignore
     }
     setMounted(true);
   }, []);
@@ -62,12 +62,34 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     }
   }, [theme, mounted]);
 
+  // Listener for system preference changes when in 'system' mode
+  useEffect(() => {
+    if (!mounted || theme !== 'system') return;
+
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = (e: MediaQueryListEvent) => {
+      const effective = e.matches ? 'dark' : 'light';
+      setResolvedTheme(effective);
+      if (effective === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    };
+
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, [theme, mounted]);
+
   const setTheme = (t: Theme) => {
     setThemeState(t);
   };
 
   const toggleTheme = () => {
-    setThemeState(prev => (prev === 'dark' ? 'light' : 'dark'));
+    setThemeState(prev => {
+      const next = resolvedTheme === 'dark' ? 'light' : 'dark';
+      return next;
+    });
   };
 
   return (
@@ -84,4 +106,3 @@ export function useTheme() {
   }
   return context;
 }
-
