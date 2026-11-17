@@ -1073,13 +1073,181 @@ export const INITIAL_MATH_SUBJECT: Subject = {
   ]
 };
 
+
+export const INITIAL_CAS_SUBJECT: Subject = {
+  id: "subj-cas-27001",
+  name: "Circuit Analysis and Synthesis (CAS)",
+  code: "EI-27001",
+  semester: "3rd Semester",
+  department: "Electronics and Instrumentation Engineering",
+  icon: "zap",
+  units: [
+    {
+      id: "cas-unit-1",
+      name: "Unit I – Basics of Electrical Networks",
+      order: 1,
+      topics: [
+        { id: "cas-u1-t1", name: "Controlled sources", completed: false, priority: "very_high", estimatedTime: "40 min", isSupplementary: false },
+        { id: "cas-u1-t2", name: "Ideal and practical voltage sources", completed: false, priority: "very_high", estimatedTime: "30 min", isSupplementary: false },
+        { id: "cas-u1-t3", name: "Ideal and practical current sources", completed: false, priority: "very_high", estimatedTime: "30 min", isSupplementary: false },
+        { id: "cas-u1-t4", name: "Characteristics of voltage and current sources", completed: false, priority: "very_high", estimatedTime: "35 min", isSupplementary: false },
+        { id: "cas-u1-t5", name: "Source transformations", completed: false, priority: "very_high", estimatedTime: "45 min", isSupplementary: false },
+        { id: "cas-u1-t6", name: "Power and energy relations", completed: false, priority: "high", estimatedTime: "30 min", isSupplementary: false },
+        { id: "cas-u1-t7", name: "Current division", completed: false, priority: "high", estimatedTime: "25 min", isSupplementary: false },
+        { id: "cas-u1-t8", name: "Voltage division", completed: false, priority: "high", estimatedTime: "25 min", isSupplementary: false },
+        { id: "cas-u1-t9", name: "Supernode analysis", completed: false, priority: "high", estimatedTime: "45 min", isSupplementary: false },
+        { id: "cas-u1-t10", name: "Mesh analysis", completed: false, priority: "high", estimatedTime: "45 min", isSupplementary: false },
+        { id: "cas-u1-t11", name: "Fundamentals of AC circuits", completed: false, priority: "high", estimatedTime: "40 min", isSupplementary: false },
+        { id: "cas-u1-t12", name: "Independent and dependent sources", completed: false, priority: "very_high", estimatedTime: "30 min", isSupplementary: true },
+        { id: "cas-u1-t13", name: "VCVS, VCCS, CCVS and CCCS", completed: false, priority: "very_high", estimatedTime: "35 min", isSupplementary: true },
+        { id: "cas-u1-t14", name: "Duality and dual networks", completed: false, priority: "moderate", estimatedTime: "35 min", isSupplementary: true },
+        { id: "cas-u1-t15", name: "Graph theory", completed: false, priority: "moderate", estimatedTime: "40 min", isSupplementary: true },
+        { id: "cas-u1-t16", name: "Tree, twig, link and chord", completed: false, priority: "moderate", estimatedTime: "35 min", isSupplementary: true },
+        { id: "cas-u1-t17", name: "Incidence matrix, tie-set matrix and cut-set matrix", completed: false, priority: "moderate", estimatedTime: "45 min", isSupplementary: true },
+        { id: "cas-u1-t18", name: "Phasor representation and rotation", completed: false, priority: "moderate", estimatedTime: "30 min", isSupplementary: true }
+      ]
+    },
+    {
+      id: "cas-unit-2",
+      name: "Unit II – Network Theorems and Poly-phase Circuits",
+      order: 2,
+      topics: [
+        { id: "cas-u2-t1", name: "Superposition theorem", completed: false, priority: "very_high", estimatedTime: "45 min", isSupplementary: false },
+        { id: "cas-u2-t2", name: "Reciprocity theorem", completed: false, priority: "high", estimatedTime: "40 min", isSupplementary: false },
+        { id: "cas-u2-t3", name: "Thevenin's theorem", completed: false, priority: "very_high", estimatedTime: "50 min", isSupplementary: false },
+        { id: "cas-u2-t4", name: "Norton's theorem", completed: false, priority: "very_high", estimatedTime: "50 min", isSupplementary: false },
+        { id: "cas-u2-t5", name: "Maximum power transfer theorem", completed: false, priority: "very_high", estimatedTime: "45 min", isSupplementary: false },
+        { id: "cas-u2-t6", name: "Compensation theorem", completed: false, priority: "high", estimatedTime: "35 min", isSupplementary: false },
+        { id: "cas-u2-t7", name: "Tellegen's theorem", completed: false, priority: "very_high", estimatedTime: "40 min", isSupplementary: false },
+        { id: "cas-u2-t8", name: "Miller's theorem", completed: false, priority: "high", estimatedTime: "35 min", isSupplementary: false },
+        { id: "cas-u2-t9", name: "Poly-phase analysis", completed: false, priority: "high", estimatedTime: "45 min", isSupplementary: false },
+        { id: "cas-u2-t10", name: "Power relations in AC circuits", completed: false, priority: "high", estimatedTime: "35 min", isSupplementary: false },
+        { id: "cas-u2-t11", name: "Bartlett's bisection theorem", completed: false, priority: "high", estimatedTime: "40 min", isSupplementary: false },
+        { id: "cas-u2-t12", name: "Millman's theorem", completed: false, priority: "high", estimatedTime: "35 min", isSupplementary: false },
+        { id: "cas-u2-t13", name: "Power triangle", completed: false, priority: "high", estimatedTime: "30 min", isSupplementary: false },
+        { id: "cas-u2-t14", name: "Sinusoidal steady-state analysis of RLC circuits", completed: false, priority: "high", estimatedTime: "45 min", isSupplementary: false },
+        { id: "cas-u2-t15", name: "Three-phase voltage generation", completed: false, priority: "moderate", estimatedTime: "30 min", isSupplementary: true },
+        { id: "cas-u2-t16", name: "ABC and CBA phase sequences", completed: false, priority: "high", estimatedTime: "30 min", isSupplementary: true },
+        { id: "cas-u2-t17", name: "Three-phase, three-wire and four-wire systems", completed: false, priority: "high", estimatedTime: "35 min", isSupplementary: true },
+        { id: "cas-u2-t18", name: "Star-connected loads", completed: false, priority: "very_high", estimatedTime: "40 min", isSupplementary: true },
+        { id: "cas-u2-t19", name: "Line and phase currents", completed: false, priority: "very_high", estimatedTime: "40 min", isSupplementary: true },
+        { id: "cas-u2-t20", name: "Neutral current", completed: false, priority: "high", estimatedTime: "30 min", isSupplementary: true },
+        { id: "cas-u2-t21", name: "Active, reactive and apparent power", completed: false, priority: "high", estimatedTime: "35 min", isSupplementary: true },
+        { id: "cas-u2-t22", name: "Phasor diagrams", completed: false, priority: "high", estimatedTime: "35 min", isSupplementary: true }
+      ]
+    },
+    {
+      id: "cas-unit-3",
+      name: "Unit III – Analysis of Coupled Circuits and Resonance",
+      order: 3,
+      topics: [
+        { id: "cas-u3-t1", name: "Magnetic coupling", completed: false, priority: "high", estimatedTime: "35 min", isSupplementary: false },
+        { id: "cas-u3-t2", name: "Mutual inductance", completed: false, priority: "very_high", estimatedTime: "45 min", isSupplementary: false },
+        { id: "cas-u3-t3", name: "Coefficient of coupling", completed: false, priority: "very_high", estimatedTime: "35 min", isSupplementary: false },
+        { id: "cas-u3-t4", name: "Dot convention", completed: false, priority: "very_high", estimatedTime: "45 min", isSupplementary: false },
+        { id: "cas-u3-t5", name: "Electrical equivalent of magnetically coupled circuits", completed: false, priority: "very_high", estimatedTime: "45 min", isSupplementary: false },
+        { id: "cas-u3-t6", name: "Series resonance", completed: false, priority: "very_high", estimatedTime: "50 min", isSupplementary: false },
+        { id: "cas-u3-t7", name: "Parallel resonance", completed: false, priority: "very_high", estimatedTime: "50 min", isSupplementary: false },
+        { id: "cas-u3-t8", name: "Bandwidth", completed: false, priority: "very_high", estimatedTime: "35 min", isSupplementary: false },
+        { id: "cas-u3-t9", name: "Selectivity", completed: false, priority: "very_high", estimatedTime: "35 min", isSupplementary: false },
+        { id: "cas-u3-t10", name: "Quality factor", completed: false, priority: "very_high", estimatedTime: "40 min", isSupplementary: false },
+        { id: "cas-u3-t11", name: "Effect of resistance on frequency response curves", completed: false, priority: "high", estimatedTime: "35 min", isSupplementary: false },
+        { id: "cas-u3-t12", name: "Parallel resonance of RLC circuits", completed: false, priority: "high", estimatedTime: "45 min", isSupplementary: false },
+        { id: "cas-u3-t13", name: "Dotted equivalent circuits", completed: false, priority: "very_high", estimatedTime: "40 min", isSupplementary: true },
+        { id: "cas-u3-t14", name: "KVL equations for coupled coils", completed: false, priority: "very_high", estimatedTime: "45 min", isSupplementary: true },
+        { id: "cas-u3-t15", name: "Minimum impedance circuits", completed: false, priority: "high", estimatedTime: "30 min", isSupplementary: true },
+        { id: "cas-u3-t16", name: "Maximum impedance circuits", completed: false, priority: "high", estimatedTime: "30 min", isSupplementary: true },
+        { id: "cas-u3-t17", name: "Half-power frequencies", completed: false, priority: "very_high", estimatedTime: "35 min", isSupplementary: true },
+        { id: "cas-u3-t18", name: "Resonance comparison and applications", completed: false, priority: "high", estimatedTime: "35 min", isSupplementary: true }
+      ]
+    },
+    {
+      id: "cas-unit-4",
+      name: "Unit IV – Two-Port Network Analysis and Network Synthesis",
+      order: 4,
+      topics: [
+        { id: "cas-u4-t1", name: "Two-port network fundamentals", completed: false, priority: "high", estimatedTime: "35 min", isSupplementary: false },
+        { id: "cas-u4-t2", name: "Z-parameters", completed: false, priority: "high", estimatedTime: "45 min", isSupplementary: false },
+        { id: "cas-u4-t3", name: "Y-parameters", completed: false, priority: "high", estimatedTime: "45 min", isSupplementary: false },
+        { id: "cas-u4-t4", name: "Hybrid parameters", completed: false, priority: "very_high", estimatedTime: "50 min", isSupplementary: false },
+        { id: "cas-u4-t5", name: "ABCD parameters", completed: false, priority: "high", estimatedTime: "45 min", isSupplementary: false },
+        { id: "cas-u4-t6", name: "Relationships between different parameter sets", completed: false, priority: "high", estimatedTime: "50 min", isSupplementary: false },
+        { id: "cas-u4-t7", name: "Reciprocity conditions", completed: false, priority: "very_high", estimatedTime: "40 min", isSupplementary: false },
+        { id: "cas-u4-t8", name: "Symmetry conditions", completed: false, priority: "very_high", estimatedTime: "40 min", isSupplementary: false },
+        { id: "cas-u4-t9", name: "Input impedance", completed: false, priority: "high", estimatedTime: "35 min", isSupplementary: false },
+        { id: "cas-u4-t10", name: "Output impedance", completed: false, priority: "high", estimatedTime: "35 min", isSupplementary: false },
+        { id: "cas-u4-t11", name: "Equivalent T-section", completed: false, priority: "very_high", estimatedTime: "45 min", isSupplementary: false },
+        { id: "cas-u4-t12", name: "Equivalent pi-section", completed: false, priority: "very_high", estimatedTime: "45 min", isSupplementary: false },
+        { id: "cas-u4-t13", name: "Network functions", completed: false, priority: "high", estimatedTime: "40 min", isSupplementary: false },
+        { id: "cas-u4-t14", name: "Interpretation of poles and zeros", completed: false, priority: "high", estimatedTime: "40 min", isSupplementary: false },
+        { id: "cas-u4-t15", name: "Pole-zero location in the complex plane", completed: false, priority: "high", estimatedTime: "40 min", isSupplementary: false },
+        { id: "cas-u4-t16", name: "ZLC impedance functions", completed: false, priority: "high", estimatedTime: "45 min", isSupplementary: false },
+        { id: "cas-u4-t17", name: "ZRL impedance functions", completed: false, priority: "high", estimatedTime: "45 min", isSupplementary: false },
+        { id: "cas-u4-t18", name: "ZRC impedance functions", completed: false, priority: "high", estimatedTime: "45 min", isSupplementary: false },
+        { id: "cas-u4-t19", name: "Hurwitz polynomial", completed: false, priority: "very_high", estimatedTime: "50 min", isSupplementary: false },
+        { id: "cas-u4-t20", name: "Positive real functions", completed: false, priority: "high", estimatedTime: "45 min", isSupplementary: false },
+        { id: "cas-u4-t21", name: "Properties of LC, RC and RL admittances", completed: false, priority: "high", estimatedTime: "45 min", isSupplementary: false },
+        { id: "cas-u4-t22", name: "Foster realization of LC circuits", completed: false, priority: "high", estimatedTime: "50 min", isSupplementary: false },
+        { id: "cas-u4-t23", name: "Ladder development", completed: false, priority: "high", estimatedTime: "45 min", isSupplementary: false },
+        { id: "cas-u4-t24", name: "Cauer-I form", completed: false, priority: "very_high", estimatedTime: "50 min", isSupplementary: false },
+        { id: "cas-u4-t25", name: "Cauer-II form", completed: false, priority: "very_high", estimatedTime: "50 min", isSupplementary: false },
+        { id: "cas-u4-t26", name: "Significance of elements in Foster and Cauer forms", completed: false, priority: "high", estimatedTime: "35 min", isSupplementary: false },
+        { id: "cas-u4-t27", name: "Determination of end elements", completed: false, priority: "high", estimatedTime: "35 min", isSupplementary: false },
+        { id: "cas-u4-t28", name: "Applicability of Foster and Cauer forms", completed: false, priority: "high", estimatedTime: "35 min", isSupplementary: false },
+        { id: "cas-u4-t29", name: "Pole-zero plots", completed: false, priority: "moderate", estimatedTime: "35 min", isSupplementary: true },
+        { id: "cas-u4-t30", name: "Hurwitz stability testing", completed: false, priority: "very_high", estimatedTime: "45 min", isSupplementary: true },
+        { id: "cas-u4-t31", name: "T-network and pi-network numerical problems", completed: false, priority: "very_high", estimatedTime: "50 min", isSupplementary: true },
+        { id: "cas-u4-t32", name: "Reciprocity and symmetry verification using h and ABCD parameters", completed: false, priority: "very_high", estimatedTime: "45 min", isSupplementary: true }
+      ]
+    },
+    {
+      id: "cas-unit-5",
+      name: "Unit V – Time-Domain and Frequency-Domain Analysis",
+      order: 5,
+      topics: [
+        { id: "cas-u5-t1", name: "Transient response of electrical circuits", completed: false, priority: "very_high", estimatedTime: "45 min", isSupplementary: false },
+        { id: "cas-u5-t2", name: "Steady-state response", completed: false, priority: "high", estimatedTime: "35 min", isSupplementary: false },
+        { id: "cas-u5-t3", name: "Initial conditions", completed: false, priority: "very_high", estimatedTime: "45 min", isSupplementary: false },
+        { id: "cas-u5-t4", name: "Final conditions", completed: false, priority: "high", estimatedTime: "35 min", isSupplementary: false },
+        { id: "cas-u5-t5", name: "Step response", completed: false, priority: "very_high", estimatedTime: "45 min", isSupplementary: false },
+        { id: "cas-u5-t6", name: "Impulse response", completed: false, priority: "very_high", estimatedTime: "45 min", isSupplementary: false },
+        { id: "cas-u5-t7", name: "Solution of differential equations using Laplace transforms", completed: false, priority: "very_high", estimatedTime: "50 min", isSupplementary: false },
+        { id: "cas-u5-t8", name: "Laplace transforms of singularity functions", completed: false, priority: "very_high", estimatedTime: "45 min", isSupplementary: false },
+        { id: "cas-u5-t9", name: "Convolution", completed: false, priority: "high", estimatedTime: "40 min", isSupplementary: false },
+        { id: "cas-u5-t10", name: "Initial value theorem", completed: false, priority: "very_high", estimatedTime: "35 min", isSupplementary: false },
+        { id: "cas-u5-t11", name: "Final value theorem", completed: false, priority: "very_high", estimatedTime: "35 min", isSupplementary: false },
+        { id: "cas-u5-t12", name: "Applications of Laplace transforms to electrical circuit analysis", completed: false, priority: "high", estimatedTime: "45 min", isSupplementary: false },
+        { id: "cas-u5-t13", name: "Integrator circuits", completed: false, priority: "very_high", estimatedTime: "45 min", isSupplementary: false },
+        { id: "cas-u5-t14", name: "Differentiator circuits", completed: false, priority: "very_high", estimatedTime: "45 min", isSupplementary: false },
+        { id: "cas-u5-t15", name: "Fundamentals of filters", completed: false, priority: "high", estimatedTime: "35 min", isSupplementary: false },
+        { id: "cas-u5-t16", name: "Impulse and step responses of RC circuits", completed: false, priority: "very_high", estimatedTime: "45 min", isSupplementary: false },
+        { id: "cas-u5-t17", name: "Impulse and step responses of RL circuits", completed: false, priority: "very_high", estimatedTime: "45 min", isSupplementary: false },
+        { id: "cas-u5-t18", name: "Impulse and step responses of RLC circuits", completed: false, priority: "high", estimatedTime: "45 min", isSupplementary: false },
+        { id: "cas-u5-t19", name: "State-space equations", completed: false, priority: "high", estimatedTime: "40 min", isSupplementary: false },
+        { id: "cas-u5-t20", name: "Unit step function", completed: false, priority: "very_high", estimatedTime: "30 min", isSupplementary: true },
+        { id: "cas-u5-t21", name: "Unit impulse function", completed: false, priority: "very_high", estimatedTime: "30 min", isSupplementary: true },
+        { id: "cas-u5-t22", name: "Ramp function", completed: false, priority: "high", estimatedTime: "25 min", isSupplementary: true },
+        { id: "cas-u5-t23", name: "Gate function", completed: false, priority: "high", estimatedTime: "25 min", isSupplementary: true },
+        { id: "cas-u5-t24", name: "Shifted-step functions", completed: false, priority: "high", estimatedTime: "30 min", isSupplementary: true },
+        { id: "cas-u5-t25", name: "Time constant", completed: false, priority: "very_high", estimatedTime: "30 min", isSupplementary: true },
+        { id: "cas-u5-t26", name: "Overdamped response", completed: false, priority: "high", estimatedTime: "35 min", isSupplementary: true },
+        { id: "cas-u5-t27", name: "Underdamped response", completed: false, priority: "high", estimatedTime: "35 min", isSupplementary: true },
+        { id: "cas-u5-t28", name: "Critically damped response", completed: false, priority: "high", estimatedTime: "35 min", isSupplementary: true },
+        { id: "cas-u5-t29", name: "Natural frequency and damping ratio", completed: false, priority: "high", estimatedTime: "35 min", isSupplementary: true },
+        { id: "cas-u5-t30", name: "Square-wave input-output projections for integrators and differentiators", completed: false, priority: "very_high", estimatedTime: "45 min", isSupplementary: true },
+        { id: "cas-u5-t31", name: "Passive low-pass, high-pass, band-pass and band-stop filters", completed: false, priority: "high", estimatedTime: "45 min", isSupplementary: true }
+      ]
+    }
+  ]
+};
+
 export const INITIAL_STUDYFLOW_DATA: StudyFlowData = {
   version: 1,
   user: {
     name: 'Satyam',
     targetExam: 'Semester Examination'
   },
-  subjects: [INITIAL_FOM_SUBJECT, INITIAL_MATH_SUBJECT],
+  subjects: [INITIAL_FOM_SUBJECT, INITIAL_MATH_SUBJECT, INITIAL_CAS_SUBJECT],
   todayTasks: [
     {
       id: 'today-1',
@@ -1115,3 +1283,4 @@ export const THEME_STORAGE_KEY = 'studyflow_theme';
 export const FOM_STORAGE_KEY = 'studyflow_fom_questions_v1';
 
 
+export const CAS_STORAGE_KEY = 'studyflow_cas_questions_v1';

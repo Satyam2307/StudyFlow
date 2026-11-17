@@ -31,6 +31,7 @@ export interface Topic {
   notes?: string;
   pyqs?: PYQItem[];
   numericalPractice?: NumericalPractice;
+  isSupplementary?: boolean; // True for PYQ supplementary topics
 }
 
 export interface Unit {

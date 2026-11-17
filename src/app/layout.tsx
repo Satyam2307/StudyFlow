@@ -4,6 +4,7 @@ import { ThemeProvider } from '@/context/ThemeContext';
 import { ToastProvider } from '@/context/ToastContext';
 import { StudyProvider } from '@/context/StudyContext';
 import { FOMProvider } from '@/context/FOMContext';
+import { CASProvider } from '@/context/CASContext';
 
 export const metadata: Metadata = {
   title: 'StudyFlow — Personal Study Tracker',
@@ -39,7 +40,9 @@ export default function RootLayout({
           <ToastProvider>
             <StudyProvider>
               <FOMProvider>
-                {children}
+                <CASProvider>
+                  {children}
+                </CASProvider>
               </FOMProvider>
             </StudyProvider>
           </ToastProvider>

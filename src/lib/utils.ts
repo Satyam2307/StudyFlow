@@ -53,8 +53,32 @@ export function getUnitStats(unit: Unit) {
   const examReady = unit.topics.filter(t => t.studyStatus === 'exam_ready' || (t.completed && !t.studyStatus)).length;
   const practising = unit.topics.filter(t => t.studyStatus === 'practising').length;
   const learning = unit.topics.filter(t => t.studyStatus === 'learning').length;
-  const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
-  return { total, completed, percentage, examReady, practising, learning };
+
+  const coreTopics = unit.topics.filter(t => !t.isSupplementary);
+  const coreTotal = coreTopics.length;
+  const coreCompleted = coreTopics.filter(t => t.completed || t.studyStatus === 'exam_ready').length;
+  const corePercentage = coreTotal > 0 ? Math.round((coreCompleted / coreTotal) * 100) : 0;
+
+  const suppTopics = unit.topics.filter(t => t.isSupplementary);
+  const suppTotal = suppTopics.length;
+  const suppCompleted = suppTopics.filter(t => t.completed || t.studyStatus === 'exam_ready').length;
+  const suppPercentage = suppTotal > 0 ? Math.round((suppCompleted / suppTotal) * 100) : 0;
+
+  const percentage = coreTotal > 0 ? corePercentage : (total > 0 ? Math.round((completed / total) * 100) : 0);
+  return {
+    total,
+    completed,
+    percentage,
+    examReady,
+    practising,
+    learning,
+    coreTotal,
+    coreCompleted,
+    corePercentage,
+    suppTotal,
+    suppCompleted,
+    suppPercentage
+  };
 }
 
 export function getSubjectStats(subject: Subject) {
@@ -69,14 +93,28 @@ export function getSubjectStats(subject: Subject) {
   let independentProblems = 0;
   let totalAttemptedProblems = 0;
 
+  let coreTotal = 0;
+  let coreCompleted = 0;
+  let suppTotal = 0;
+  let suppCompleted = 0;
+
   subject.units.forEach(u => {
     u.topics.forEach(t => {
       total += 1;
       const status = getTopicStudyStatus(t);
-      if (t.completed || status === 'exam_ready') completed += 1;
+      const isDone = t.completed || status === 'exam_ready';
+      if (isDone) completed += 1;
       if (status === 'exam_ready') examReady += 1;
       if (status === 'practising') practising += 1;
       if (status === 'learning') learning += 1;
+
+      if (t.isSupplementary) {
+        suppTotal += 1;
+        if (isDone) suppCompleted += 1;
+      } else {
+        coreTotal += 1;
+        if (isDone) coreCompleted += 1;
+      }
 
       if (t.pyqs) {
         totalPyqs += t.pyqs.length;
@@ -91,7 +129,11 @@ export function getSubjectStats(subject: Subject) {
     });
   });
 
-  const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+  const corePercentage = coreTotal > 0 ? Math.round((coreCompleted / coreTotal) * 100) : 0;
+  const suppPercentage = suppTotal > 0 ? Math.round((suppCompleted / suppTotal) * 100) : 0;
+  // If core topics exist, syllabus completion percentage is strictly based on core topics
+  const percentage = coreTotal > 0 ? corePercentage : (total > 0 ? Math.round((completed / total) * 100) : 0);
+
   return {
     total,
     completed,
@@ -104,7 +146,13 @@ export function getSubjectStats(subject: Subject) {
     solvedPyqs,
     solvedWithoutNotesPyqs,
     independentProblems,
-    totalAttemptedProblems
+    totalAttemptedProblems,
+    coreTotal,
+    coreCompleted,
+    corePercentage,
+    suppTotal,
+    suppCompleted,
+    suppPercentage
   };
 }
 

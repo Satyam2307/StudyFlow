@@ -161,6 +161,13 @@ export function TopicItem({
                 {topic.name}
               </p>
 
+              {/* Supplementary PYQ Badge */}
+              {topic.isSupplementary && (
+                <span className="text-[9px] font-semibold tracking-wider uppercase px-1.5 py-0.5 rounded bg-[#FEF3C7] dark:bg-[#382B12] text-[#92400E] dark:text-[#FCD34D] border border-[#FDE68A] dark:border-[#523F1A]">
+                  PYQ Supplementary
+                </span>
+              )}
+
               {/* PYQ indicator tag if exists */}
               {pyqList.length > 0 && (
                 <span

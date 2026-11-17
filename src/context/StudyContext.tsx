@@ -16,6 +16,7 @@ import {
 import {
   INITIAL_STUDYFLOW_DATA,
   INITIAL_MATH_SUBJECT,
+  INITIAL_CAS_SUBJECT,
   LOCAL_STORAGE_KEY
 } from '@/lib/constants';
 import {
@@ -108,6 +109,14 @@ export function StudyProvider({ children }: { children: React.ReactNode }) {
             s => s.id === INITIAL_MATH_SUBJECT.id || s.name.includes('Mathematics-III')
           );
           let mergedSubjects = hasMath ? parsed.subjects : [...parsed.subjects, INITIAL_MATH_SUBJECT];
+
+          // Check if Circuit Analysis and Synthesis (CAS) is present. If not, merge it
+          const hasCAS = mergedSubjects.some(
+            s => s.id === INITIAL_CAS_SUBJECT.id || s.code === 'EI-27001' || s.name.toLowerCase().includes('circuit analysis')
+          );
+          if (!hasCAS) {
+            mergedSubjects = [...mergedSubjects, INITIAL_CAS_SUBJECT];
+          }
 
           // Ensure all topics across all subjects have modern fields initialized
           mergedSubjects = mergedSubjects.map(subject => ({

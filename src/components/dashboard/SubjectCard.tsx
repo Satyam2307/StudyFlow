@@ -7,6 +7,7 @@ import {
   Cpu,
   Layers,
   Calculator,
+  Zap,
   ArrowRight,
   ChevronRight,
   CheckCircle2,
@@ -33,6 +34,8 @@ export function SubjectCard({ subject, onClick }: SubjectCardProps) {
         return <Calculator className="w-4 h-4" />;
       case 'cpu':
         return <Cpu className="w-4 h-4" />;
+      case 'zap':
+        return <Zap className="w-4 h-4" />;
       case 'layers':
         return <Layers className="w-4 h-4" />;
       default:
@@ -84,7 +87,7 @@ export function SubjectCard({ subject, onClick }: SubjectCardProps) {
         {/* Units count & Exam-ready badge */}
         <div className="flex items-center gap-2 mt-1.5 flex-wrap">
           <span className="text-[11px] text-[#858780] dark:text-[#8E928A]">
-            {subject.units.length} units · {stats.total} topics
+            {subject.units.length} units · {stats.coreTotal > 0 ? `${stats.coreTotal} core + ${stats.suppTotal} PYQ` : `${stats.total} topics`}
           </span>
           {stats.examReady > 0 && (
             <span className="inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded bg-[#F0FDF4] dark:bg-[#14281A] text-[#166534] dark:text-[#86EFAC] border border-[#BBF7D0] dark:border-[#1B4D2B]">
@@ -99,7 +102,9 @@ export function SubjectCard({ subject, onClick }: SubjectCardProps) {
       <div className="pt-4 mt-4 border-t border-[#F0F1EC] dark:border-[#252824]">
         <div className="flex items-center justify-between text-xs mb-1.5">
           <span className="text-[#858780] dark:text-[#8E928A] text-[11px]">
-            {stats.completed} of {stats.total} completed
+            {stats.coreTotal > 0
+              ? `${stats.coreCompleted} of ${stats.coreTotal} core completed`
+              : `${stats.completed} of ${stats.total} completed`}
           </span>
           <span className="font-semibold text-[#20211F] dark:text-[#EAECE7] text-[11px]">
             {stats.percentage}%

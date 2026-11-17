@@ -35,6 +35,17 @@ import { FOMAnswerLibrary } from '@/components/fom/FOMAnswerLibrary';
 import { FOMRevisionTracker } from '@/components/fom/FOMRevisionTracker';
 import { FOMAnswerModal } from '@/components/fom/FOMAnswerModal';
 
+import { useCAS } from '@/context/CASContext';
+import { CASHeader } from '@/components/cas/CASHeader';
+import { CASOverview } from '@/components/cas/CASOverview';
+import { CASUnitSection } from '@/components/cas/CASUnitSection';
+import { CASImportantQuestions } from '@/components/cas/CASImportantQuestions';
+import { CASPYQSection } from '@/components/cas/CASPYQSection';
+import { CASNumericalPractice } from '@/components/cas/CASNumericalPractice';
+import { CASAnswerLibrary } from '@/components/cas/CASAnswerLibrary';
+import { CASRevisionTracker } from '@/components/cas/CASRevisionTracker';
+import { CASAnswerModal } from '@/components/cas/CASAnswerModal';
+
 interface SubjectDetailProps {
   subject: Subject;
   onBack: () => void;
@@ -54,9 +65,12 @@ export function SubjectDetail({ subject, onBack }: SubjectDetailProps) {
   } = useStudy();
 
   const isFOM = subject.id === 'subj-fom-27002' || subject.name.toLowerCase().includes('fundamentals of measurement');
-  const { activeSection } = useFOM();
+  const isCAS = subject.id === 'subj-cas-27001' || subject.code === 'EI-27001' || subject.name.toLowerCase().includes('circuit analysis');
+  const { activeSection: fomActiveSection } = useFOM();
+  const { activeSection: casActiveSection } = useCAS();
 
   const [fomSyllabusView, setFomSyllabusView] = useState<'questions' | 'topics'>('questions');
+  const [casSyllabusView, setCasSyllabusView] = useState<'questions' | 'topics'>('questions');
   const [filter, setFilter] = useState<TopicFilter>('all');
   const [search, setSearch] = useState('');
 
@@ -156,12 +170,12 @@ export function SubjectDetail({ subject, onBack }: SubjectDetailProps) {
         </button>
       </div>
 
-      {/* Subject Content: FOM 7 Sections or Standard Subject View */}
+      {/* Subject Content: FOM 7 Sections, CAS 7 Sections, or Standard Subject View */}
       {isFOM ? (
         <div className="space-y-6">
           <FOMHeader />
-          {activeSection === 'overview' && <FOMOverview />}
-          {activeSection === 'syllabus' && (
+          {fomActiveSection === 'overview' && <FOMOverview />}
+          {fomActiveSection === 'syllabus' && (
             <div className="space-y-6">
               {/* Toggle between Question Bank & Syllabus Topics */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-xl bg-white dark:bg-[#1D1F1C] border border-[#E8E9E4] dark:border-[#292C27] shadow-2xs">
@@ -272,12 +286,134 @@ export function SubjectDetail({ subject, onBack }: SubjectDetailProps) {
               )}
             </div>
           )}
-          {activeSection === 'important_questions' && <FOMImportantQuestions />}
-          {activeSection === 'pyqs' && <FOMPYQSection />}
-          {activeSection === 'numerical_practice' && <FOMNumericalPractice />}
-          {activeSection === 'answer_library' && <FOMAnswerLibrary />}
-          {activeSection === 'revision_tracker' && <FOMRevisionTracker />}
+          {fomActiveSection === 'important_questions' && <FOMImportantQuestions />}
+          {fomActiveSection === 'pyqs' && <FOMPYQSection />}
+          {fomActiveSection === 'numerical_practice' && <FOMNumericalPractice />}
+          {fomActiveSection === 'answer_library' && <FOMAnswerLibrary />}
+          {fomActiveSection === 'revision_tracker' && <FOMRevisionTracker />}
           <FOMAnswerModal />
+        </div>
+      ) : isCAS ? (
+        <div className="space-y-6">
+          <CASHeader />
+          {casActiveSection === 'overview' && <CASOverview />}
+          {casActiveSection === 'syllabus' && (
+            <div className="space-y-6">
+              {/* Toggle between Question Bank & Syllabus Topics */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-xl bg-white dark:bg-[#1D1F1C] border border-[#E8E9E4] dark:border-[#292C27] shadow-2xs">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-[#20211F] dark:text-[#EAECE7]">Syllabus View:</span>
+                  <div className="flex items-center p-0.5 rounded-lg bg-[#E8E9E4]/60 dark:bg-[#252824]">
+                    <button
+                      onClick={() => setCasSyllabusView('questions')}
+                      className={cn(
+                        "px-3 py-1 text-xs font-medium rounded-md transition-colors",
+                        casSyllabusView === 'questions'
+                          ? "bg-white dark:bg-[#1D1F1C] text-[#20211F] dark:text-[#EAECE7] shadow-2xs font-semibold"
+                          : "text-[#858780] hover:text-[#20211F] dark:hover:text-[#EAECE7]"
+                      )}
+                    >
+                      Unit Question Bank & Analytics
+                    </button>
+                    <button
+                      onClick={() => setCasSyllabusView('topics')}
+                      className={cn(
+                        "px-3 py-1 text-xs font-medium rounded-md transition-colors",
+                        casSyllabusView === 'topics'
+                          ? "bg-white dark:bg-[#1D1F1C] text-[#20211F] dark:text-[#EAECE7] shadow-2xs font-semibold"
+                          : "text-[#858780] hover:text-[#20211F] dark:hover:text-[#EAECE7]"
+                      )}
+                    >
+                      Syllabus Topics Checklist
+                    </button>
+                  </div>
+                </div>
+
+                {casSyllabusView === 'topics' && (
+                  <button
+                    onClick={handleOpenAddUnit}
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-[#64866D] hover:bg-[#54735C] dark:bg-[#7B9F84] dark:hover:bg-[#688E71] text-white transition-colors shrink-0 shadow-2xs"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>Add Unit</span>
+                  </button>
+                )}
+              </div>
+
+              {casSyllabusView === 'questions' ? (
+                <CASUnitSection />
+              ) : (
+                <div className="space-y-4">
+                  {/* Filter and Search Bar */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
+                    <div className="relative flex-1 max-w-sm">
+                      <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#858780]" />
+                      <input
+                        type="text"
+                        value={search}
+                        onChange={e => setSearch(e.target.value)}
+                        placeholder="Search topics in this subject..."
+                        className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-[#E8E9E4] dark:border-[#292C27] bg-white dark:bg-[#1D1F1C] text-[#20211F] dark:text-[#EAECE7] placeholder:text-[#858780] focus:outline-none focus:border-[#64866D] dark:focus:border-[#7B9F84]"
+                      />
+                    </div>
+                    <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
+                      <div className="flex items-center p-0.5 rounded-lg bg-[#E8E9E4]/60 dark:bg-[#252824] shrink-0">
+                        {(
+                          [
+                            { id: 'all', label: 'All' },
+                            { id: 'pending', label: 'Pending' },
+                            { id: 'completed', label: 'Done' },
+                            { id: 'high', label: 'High Priority' }
+                          ] as const
+                        ).map(f => (
+                          <button
+                            key={f.id}
+                            onClick={() => setFilter(f.id)}
+                            className={cn(
+                              "px-2.5 py-1 text-xs font-medium rounded-md transition-colors",
+                              filter === f.id
+                                ? "bg-white dark:bg-[#1D1F1C] text-[#20211F] dark:text-[#EAECE7] shadow-2xs font-semibold"
+                                : "text-[#858780] hover:text-[#20211F] dark:hover:text-[#EAECE7]"
+                            )}
+                          >
+                            {f.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Unit Accordions List */}
+                  <div className="space-y-3 pt-1">
+                    {subject.units.map(unit => (
+                      <UnitAccordion
+                        key={unit.id}
+                        unit={unit}
+                        subjectId={subject.id}
+                        filter={filter}
+                        searchQuery={search}
+                        onAddTopic={handleOpenAddTopic}
+                        onEditTopic={handleOpenEditTopic}
+                        onDeleteTopic={(uId, tId) =>
+                          setConfirmDeleteTopic({ unitId: uId, topicId: tId })
+                        }
+                        onRenameUnit={handleOpenRenameUnit}
+                        onDeleteUnit={(uId, uName) =>
+                          setConfirmDeleteUnit({ unitId: uId, unitName: uName })
+                        }
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+          {casActiveSection === 'important_questions' && <CASImportantQuestions />}
+          {casActiveSection === 'pyqs' && <CASPYQSection />}
+          {casActiveSection === 'numerical_practice' && <CASNumericalPractice />}
+          {casActiveSection === 'answer_library' && <CASAnswerLibrary />}
+          {casActiveSection === 'revision_tracker' && <CASRevisionTracker />}
+          <CASAnswerModal />
         </div>
       ) : (
         <>
